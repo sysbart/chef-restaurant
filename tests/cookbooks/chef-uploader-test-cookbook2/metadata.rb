@@ -1,6 +1,6 @@
-name             'chef-uploader-test-cookbook'
+name             'chef-uploader-test-cookbook2'
 maintainer       "Chef Uploader"
-maintainer_email "test1@email.com"
+maintainer_email "test@email.com"
 license          "All rights reserved"
 description      "Chef uploader release process test"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
