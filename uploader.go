@@ -1,20 +1,11 @@
 package main
 
 import (
-	//"github.com/sysbart/spife"
-	//"os"
- //"github.com/nlopes/slack"
  "strings"
  "flag"
  "./chef/"
  "./git/"
 )
-
-
-func notifySlack() {
-
-}
-
 
 func main() {
 	optCommit := flag.String("commit", "", "commit ID")
@@ -38,5 +29,4 @@ func main() {
 			chef.Upload("cookbook", file)
 		}
 	}
-
 }
