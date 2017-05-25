@@ -24,19 +24,29 @@ func LastCommit() string {
 	return commit
 }
 
-func CommitInfo(commit string) *structs.CommitInfo {
+func CommitInfo(commit string) structs.CommitInfo {
+  merge := false
+  commitRegexp := regexp.MustCompile(`(?s)commit (.*)Author: (.*)Date: (.*)\n\n(.*)`)
+
 	commitCmd, err := exec.Command("git", "log", "-n1").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	commitRegexp := regexp.MustCompile(`commit (?P<commit>.*)|Merge: (.*)|Author: (.*)|Date: (.*)|(.*)`)
-	n1 := commitRegexp.SubexpNames()
-	r2 := commitRegexp.FindAllStringSubmatch(string(commitCmd), -1)[1][0]
+  if strings.Contains(string(commitCmd), "^Merge:") {
+    commitRegexp = regexp.MustCompile(`(?s)commit (.*)Merge: .*Author: (.*)Date: (.*)\n\n(.*)`)
+    merge = true
+  }
+
+  commitSubMatch := commitRegexp.FindStringSubmatch(string(commitCmd))
+  commit, author, date, title := strings.TrimSpace(commitSubMatch[1]), strings.TrimSpace(commitSubMatch[2]), strings.TrimSpace(commitSubMatch[3]), strings.TrimSpace(commitSubMatch[4])
 
 //	fmt.Println("TEST"+ n1["commit"])
-		fmt.Println("TEST"+ r2)
-	return false, "b", "c"
+		fmt.Println("Commit: "+ commit)
+		fmt.Println("Author: "+ author)
+    fmt.Println("Date: "+ date)
+    fmt.Println("Title: "+ title)
+	return structs.CommitInfo{merge, author, date}
 }
 
 func FilesListForEachCommit(commit string) []string {
