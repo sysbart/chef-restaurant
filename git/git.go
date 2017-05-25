@@ -1,9 +1,7 @@
 package git
 
 import (
-  //"os"
-	"os/exec"
- //"github.com/nlopes/slack"
+ "os/exec"
  "fmt"
  "log"
  "strings"
@@ -41,17 +39,12 @@ func CommitInfo(commit string) structs.CommitInfo {
   commitSubMatch := commitRegexp.FindStringSubmatch(string(commitCmd))
   commit, author, date, title := strings.TrimSpace(commitSubMatch[1]), strings.TrimSpace(commitSubMatch[2]), strings.TrimSpace(commitSubMatch[3]), strings.TrimSpace(commitSubMatch[4])
 
-//	fmt.Println("TEST"+ n1["commit"])
-		fmt.Println("Commit: "+ commit)
-		fmt.Println("Author: "+ author)
-    fmt.Println("Date: "+ date)
-    fmt.Println("Title: "+ title)
-	return structs.CommitInfo{merge, author, date}
+	return structs.CommitInfo{merge, author, date, title}
 }
 
 func FilesListForEachCommit(commit string) []string {
 	fmt.Println("Retrieving files list for the commit " + commit )
-	filesCmd, err := exec.Command("git", "ls-tree", "-r", "--name-only", commit).Output()
+	filesCmd, err := exec.Command("git", "diff", "--name-only", commit, commit + "^").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
