@@ -3,15 +3,10 @@ package main
 import (
 	//"github.com/sysbart/spife"
 	//"os"
-	"os/exec"
  //"github.com/nlopes/slack"
- "fmt"
- "log"
  "strings"
- "regexp"
  "flag"
  "./chef/"
- "./structs/"
  "./git/"
 )
 
