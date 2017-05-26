@@ -1,10 +1,12 @@
-package chef-restaurant
+package main
 
 import (
  "strings"
  "flag"
+ "fmt"
  "./chef/"
  "./git/"
+ "./helpers/"
 )
 
 func main() {
@@ -26,7 +28,14 @@ func main() {
 		} else if strings.Contains(file, "roles/") {
 			chef.Upload("role", file)
 		} else if strings.Contains(file, "cookbooks/") {
-			chef.Upload("cookbook", file)
+
+      bumpLevel := "patch"
+      newVersion := helpers.Metadata(file, bumpLevel)
+      cookbookName := chef.CookbookInfo(file)
+
+      git.Commit(file, fmt.Sprintf("Pin %s version for the cookbook %s", newVersion, cookbookName))
+      git.Push()
+			chef.Upload(cookbookName, file)
 		}
 	}
 }

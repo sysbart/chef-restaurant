@@ -11,6 +11,23 @@ import (
 )
 
 
+func Push() {
+	_, err := exec.Command("git", "push", "origin", "master").Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+
+func Commit(file string, message string) {
+	_, err := exec.Command("git", "commit", file, "-m", message).Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+  fmt.Printf("Committed the file %s [%s]", file, message)
+}
+
 func LastCommit() string {
 	commitCmd, err := exec.Command("git", "log", "-n1", "--pretty=format:%h").Output()
 	if err != nil {

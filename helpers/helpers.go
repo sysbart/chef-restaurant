@@ -1,5 +1,7 @@
 package helpers
-// https://www.dotnetperls.com/duplicates-go
+
+// Based on https://www.dotnetperls.com/duplicates-go
+
 func RemoveDuplicatesUnordered(elements []string) []string {
     encountered := map[string]bool{}
 
