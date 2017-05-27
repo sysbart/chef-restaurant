@@ -12,7 +12,7 @@ import (
 
 
 func Push() {
-	_, err := exec.Command("git", "push", "origin", "master").Output()
+	_, err := exec.Command("echo", "git", "push", "origin", "master").Output()
 	if err != nil {
 		log.Fatal(err)
 	}

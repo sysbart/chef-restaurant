@@ -4,6 +4,7 @@ import (
  "strings"
  "flag"
  "fmt"
+ "os"
  "./chef/"
  "./git/"
  "./helpers/"
@@ -18,10 +19,14 @@ func main() {
 	        commit = git.LastCommit()
 	}
 
-	files := git.FilesListForEachCommit(commit)
-	git.CommitInfo(commit)
+	commitAuthor := git.CommitInfo(commit).Author
+  if strings.Contains(commitAuthor, "chef-restaurant") {
+    fmt.Println("The author of the last commit is chef-restaurant. I am exiting.")
+    os.Exit(0)
+  }
 
 	// Environment and roles are file based, cookbooks are folder based
+  files := git.FilesListForEachCommit(commit)
 	for _, file := range files {
 		if strings.Contains(file, "environments/") {
 			chef.Upload("environment", file)
@@ -35,7 +40,7 @@ func main() {
 
       git.Commit(file, fmt.Sprintf("Pin %s version for the cookbook %s", newVersion, cookbookName))
       git.Push()
-			chef.Upload(cookbookName, file)
+			chef.Upload("cookbook", file)
 		}
 	}
 }

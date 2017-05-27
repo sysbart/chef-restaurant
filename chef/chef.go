@@ -13,8 +13,11 @@ func Upload(object string, file string) {
 	fmt.Println(strings.Title(object) + " " + file + " has been modified")
 
 	if object == "cookbook" {
-	//	baseFolder := regexp.MustCompile(`(.*/cookbooks/[^/]*)/(.*)`).
-		knife(object + " upload -o " + file)
+    cookbookRegexp := regexp.MustCompile(`(.*/cookbooks)/(.*)`)
+    cookbookBaseFolder := cookbookRegexp.ReplaceAllString(file, "$1")
+    cookbookName := CookbookInfo(file)
+    
+		knife(object + " upload -o " + cookbookBaseFolder + " " + cookbookName)
 	} else {
 		knife(object + " from file " + file)
 	}
@@ -58,16 +61,3 @@ func CookbookInfo(path string) string {
 
   return cookbookName
 }
-
-/*
-func CookbookGenerateNewVersion(folder string) []string {
-
-}
-
-func CookbookVersionType() string {
-
-}
-
-func CookbookModifyMetadata(folder string, newVersion string) {
-
-} */
