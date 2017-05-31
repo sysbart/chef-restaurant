@@ -1,13 +1,13 @@
 package main
 
 import (
-	"./chef/"
-	"./git/"
-	"./helpers/"
-	"./notification"
 	"flag"
 	"fmt"
 	"github.com/spf13/viper"
+	"github.com/sysbart/chef-restaurant/chef"
+	"github.com/sysbart/chef-restaurant/git"
+	"github.com/sysbart/chef-restaurant/helpers"
+	"github.com/sysbart/chef-restaurant/notification"
 	"log"
 	"os"
 	"strings"

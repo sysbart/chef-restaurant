@@ -1,9 +1,9 @@
 package git
 
 import (
-	"../helpers"
-	"../structs"
 	"fmt"
+	"github.com/sysbart/chef-restaurant/helpers"
+	"github.com/sysbart/chef-restaurant/structs"
 	"log"
 	"os/exec"
 	"regexp"
