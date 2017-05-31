@@ -36,7 +36,7 @@ func Upload(object string, file string) {
 }
 
 func knife(cmd string) {
-	uploadCmd, err := exec.Command("echo", "knife "+cmd).Output()
+	uploadCmd, err := exec.Command("knife", cmd).Output()
 	if err != nil {
 		log.Fatal(err)
 	}
