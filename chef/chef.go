@@ -9,20 +9,30 @@ import (
  "regexp"
 )
 
+func ParseObjectByFileName(object string, file string) string {
+  var parsedFilename string
+  if object == "cookbook" {
+    parsedFilename = CookbookInfo(file)
+  } else {
+    fileRegexp := regexp.MustCompile(`.*/(.*)\..*$`)
+    parsedFilename = fileRegexp.ReplaceAllString(file, "$1")
+  }
+  return parsedFilename
+}
+
 func Upload(object string, file string) {
-	fmt.Println(strings.Title(object) + " " + file + " has been modified")
+  fmt.Printf("%s %s has been modified\n", strings.Title(object), file)
+  parsedFilename := ParseObjectByFileName(object, file)
 
 	if object == "cookbook" {
     cookbookRegexp := regexp.MustCompile(`(.*/cookbooks)/(.*)`)
     cookbookBaseFolder := cookbookRegexp.ReplaceAllString(file, "$1")
-    cookbookName := CookbookInfo(file)
-    
-		knife(object + " upload -o " + cookbookBaseFolder + " " + cookbookName)
+		knife(object + " upload -o " + cookbookBaseFolder + " " + parsedFilename)
 	} else {
 		knife(object + " from file " + file)
 	}
 
-	fmt.Println(strings.Title(object) + " " + file + " uploaded")
+  fmt.Printf("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
 }
 
 func knife(cmd string) {
