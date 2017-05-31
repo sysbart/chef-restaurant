@@ -20,10 +20,12 @@ Chef Restaurant also assumes the following softwares are already installed :
 
 Simply run the Chef Restaurant executable with no parameter on the repo where your Chef Git repo is.
 
-```./chef-restaurant
+```
+./chef-restaurant
 ```
 
 If you want to run an early commit using Chef Restaurant, you can use the following parameter to do so.
 
-```./chef-restaurant -commit <commitID>
+```
+./chef-restaurant -commit <commitID>
 ```
