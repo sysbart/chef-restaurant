@@ -13,7 +13,7 @@ import (
 
 
 // Based on https://github.com/palourde/spife/blob/master/spife.go
-// Imported to use locally the functions that were not exported.
+// Imported to use locally for the functions that were not exported.
 
 // Version ...
 type Version struct {
