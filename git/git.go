@@ -10,6 +10,8 @@ import (
  "../structs"
 )
 
+var GitHubOrganizationName string
+var GitHubRepoName string
 
 func Push() {
 	_, err := exec.Command("echo", "git", "push", "origin", "master").Output()
@@ -25,7 +27,7 @@ func Commit(file string, message string) {
 		log.Fatal(err)
 	}
 
-  fmt.Printf("Committed the file %s [%s]", file, message)
+  fmt.Printf("Committed the file %s [%s]\n", file, message)
 }
 
 func LastCommit() string {
@@ -35,7 +37,8 @@ func LastCommit() string {
 	}
 
 	commit := string(commitCmd)
-	fmt.Println("Last commit found: " + commit)
+  fmt.Printf("Last commit found : %s\n", commit)
+
 	return commit
 }
 
@@ -43,7 +46,7 @@ func CommitInfo(commit string) structs.CommitInfo {
   merge := false
   commitRegexp := regexp.MustCompile(`(?s)commit (.*)Author: (.*)Date: (.*)\n\n(.*)`)
 
-	commitCmd, err := exec.Command("git", "log", "-n1").Output()
+	commitCmd, err := exec.Command("git", "log", "-n1", commit).Output()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,8 +62,13 @@ func CommitInfo(commit string) structs.CommitInfo {
 	return structs.CommitInfo{merge, author, date, title}
 }
 
+func GenerateCommitURL(commit string) string{
+  URL := fmt.Sprintf("https://github.com/%s/%s/commit/%s", GitHubOrganizationName, GitHubRepoName, commit)
+  return URL
+}
+
 func FilesListForEachCommit(commit string) []string {
-	fmt.Println("Retrieving files list for the commit " + commit )
+  fmt.Printf("Retrieving files list for the commit %s\n", commit)
 	filesCmd, err := exec.Command("git", "diff", "--name-only", commit, commit + "^").Output()
 	if err != nil {
 		log.Fatal(err)
