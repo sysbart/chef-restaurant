@@ -29,3 +29,6 @@ If you want to run an early commit using Chef Restaurant, you can use the follow
 ```
 ./chef-restaurant -commit <commitID>
 ```
+
+## Maintainer / Author
+Jonathan Barthélémy
