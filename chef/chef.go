@@ -25,19 +25,20 @@ func Upload(object string, file string) {
 	parsedFilename := ParseObjectByFileName(object, file)
 
 	if object == "cookbook" {
-		cookbookRegexp := regexp.MustCompile(`(.*/cookbooks)/(.*)`)
+		cookbookRegexp := regexp.MustCompile(`(.*cookbooks)/(.*)`)
 		cookbookBaseFolder := cookbookRegexp.ReplaceAllString(file, "$1")
-		knife(object + " upload -o " + cookbookBaseFolder + " " + parsedFilename)
+		knife(object, "upload", "-o", cookbookBaseFolder, parsedFilename)
 	} else {
-		knife(object + " from file " + file)
+		knife(object, "from", "file", file)
 	}
 
 	fmt.Printf("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
 }
 
-func knife(cmd string) {
-	uploadCmd, err := exec.Command("knife", cmd).Output()
+func knife(cmd ...string) {
+	uploadCmd, err := exec.Command("knife", cmd...).Output()
 	if err != nil {
+		log.Print(string(uploadCmd))
 		log.Fatal(err)
 	}
 	fmt.Println(strings.TrimSpace(string(uploadCmd)))
