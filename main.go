@@ -13,15 +13,16 @@ import (
 	"strings"
 )
 
-func config() {
-	viper.AddConfigPath("config")
+var skippedAuthorName string
+func config(configFolder string) {
+	viper.AddConfigPath(configFolder)
 	viper.SetConfigName("config")
 	viper.SetConfigType("json")
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
-
+	skippedAuthorName = viper.GetString("skipped_author_name")
 	notification.SlackNotificationHookURL = viper.GetString("slack.notification.hook_url")
 	notification.SlackNotificationChannel = viper.GetString("slack.notification.channel")
 	git.GitHubOrganizationName = viper.GetString("github.organization")
@@ -38,6 +39,7 @@ func config() {
 
 func main() {
 	optCommit := flag.String("commit", "", "commit ID")
+	optConfigFolder := flag.String("configFolder", "", "config directory")
 	flag.Parse()
 
 	commit := *optCommit
@@ -45,12 +47,17 @@ func main() {
 		commit = git.LastCommit()
 	}
 
+	configFolder := *optConfigFolder
+	if configFolder == "" {
+		configFolder = "config"
+	}
+
 	commitAuthor := git.CommitInfo(commit).Author
 	commitTitle := git.CommitInfo(commit).Title
 
-	config()
+	config(configFolder)
 
-	if strings.Contains(commitAuthor, "chef-restaurant") {
+	if strings.Contains(commitAuthor, skippedAuthorName) {
 		fmt.Println("The author of the last commit is chef-restaurant. I am exiting.")
 		os.Exit(0)
 	}

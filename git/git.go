@@ -73,7 +73,7 @@ func FilesListForEachCommit(commit string) []string {
 		log.Fatal(err)
 	}
 	filesCmdUnFiltered := string(filesCmd)
-	cookbookRegexp := regexp.MustCompile(`(.*/cookbooks/[^/]*)/(.*)`)
+	cookbookRegexp := regexp.MustCompile(`(.*cookbooks/[^/]*)/(.*)`)
 	filesCmdFiltered := cookbookRegexp.ReplaceAllString(filesCmdUnFiltered, "$1")
 	filesList := helpers.RemoveDuplicatesUnordered(strings.Split(strings.TrimSpace(filesCmdFiltered), "\n"))
 
