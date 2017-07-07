@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os/exec"
 	"regexp"
 	"strings"
+	"github.com/sysbart/chef-restaurant/helpers"
 )
 
 func ParseObjectByFileName(object string, file string) string {
@@ -36,11 +36,7 @@ func Upload(object string, file string) {
 }
 
 func knife(cmd ...string) {
-	uploadCmd, err := exec.Command("knife", cmd...).Output()
-	if err != nil {
-		log.Print(string(uploadCmd))
-		log.Fatal(err)
-	}
+	uploadCmd := helpers.RunCommand("knife", cmd...)
 	fmt.Println(strings.TrimSpace(string(uploadCmd)))
 }
 
