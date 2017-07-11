@@ -8,7 +8,7 @@ import (
 	"github.com/sysbart/chef-restaurant/git"
 	"github.com/sysbart/chef-restaurant/helpers"
 	"github.com/sysbart/chef-restaurant/notification"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"strings"
 )

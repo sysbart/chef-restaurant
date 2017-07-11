@@ -3,9 +3,9 @@ package chef
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"regexp"
 	"strings"
+	log "github.com/sirupsen/logrus"
 	"github.com/sysbart/chef-restaurant/helpers"
 )
 
@@ -21,7 +21,7 @@ func ParseObjectByFileName(object string, file string) string {
 }
 
 func Upload(object string, file string) {
-	fmt.Printf("%s %s has been modified\n", strings.Title(object), file)
+	log.Info("%s %s has been modified\n", strings.Title(object), file)
 	parsedFilename := ParseObjectByFileName(object, file)
 
 	if object == "cookbook" {
@@ -32,7 +32,7 @@ func Upload(object string, file string) {
 		knife(object, "from", "file", file)
 	}
 
-	fmt.Printf("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
+	log.Info("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
 }
 
 func knife(cmd ...string) {

@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"github.com/sysbart/chef-restaurant/helpers"
 	"github.com/sysbart/chef-restaurant/structs"
 	"regexp"
@@ -18,14 +19,14 @@ func Push() {
 func Commit(file string, message string) {
 	helpers.RunCommand("git", "commit", file, "-m", message)
 
-	fmt.Printf("Committed the file %s [%s]\n", file, message)
+	log.Info("Committed the file %s [%s]\n", file, message)
 }
 
 func LastCommit() string {
 	commitCmd := helpers.RunCommand("git", "log", "-n1", "--pretty=format:%h")
 
 	commit := string(commitCmd)
-	fmt.Printf("Last commit found : %s\n", commit)
+	log.Info("Last commit found : %s\n", commit)
 
 	return commit
 }
@@ -53,7 +54,7 @@ func GenerateCommitURL(commit string) string {
 }
 
 func FilesListForEachCommit(commit string) []string {
-	fmt.Printf("Retrieving files list for the commit %s\n", commit)
+	log.Info("Retrieving files list for the commit %s\n", commit)
 	filesCmd := helpers.RunCommand("git", "diff", "--name-only", commit, commit+"^")
 	filesCmdUnFiltered := string(filesCmd)
 	cookbookRegexp := regexp.MustCompile(`(.*cookbooks/[^/]*)/(.*)`)

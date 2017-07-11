@@ -1,7 +1,8 @@
 package helpers
 import (
 	"os/exec"
-  "log"
+  log "github.com/sirupsen/logrus"
+  "strings"
 )
 // Based on https://www.dotnetperls.com/duplicates-go
 func RemoveDuplicatesUnordered(elements []string) []string {
@@ -23,8 +24,9 @@ func RemoveDuplicatesUnordered(elements []string) []string {
 
 func RunCommand(cmd string, args...string) []byte {
   runCmd, err := exec.Command(cmd, args...).Output()
+  log.Debugf("Running command : %s %s...", cmd, strings.Join(args[:], " "))
+
   if err != nil {
-    log.Print(string(runCmd))
     log.Fatal(err)
   }
   return runCmd
