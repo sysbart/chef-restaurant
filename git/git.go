@@ -19,14 +19,14 @@ func Push() {
 func Commit(file string, message string) {
 	helpers.RunCommand("git", "commit", file, "-m", message)
 
-	log.Info("Committed the file %s [%s]\n", file, message)
+	log.Infof("Committed the file %s [%s]\n", file, message)
 }
 
 func LastCommit() string {
 	commitCmd := helpers.RunCommand("git", "log", "-n1", "--pretty=format:%h")
 
 	commit := string(commitCmd)
-	log.Info("Last commit found : %s\n", commit)
+	log.Infof("Last commit found : %s\n", commit)
 
 	return commit
 }
@@ -54,7 +54,7 @@ func GenerateCommitURL(commit string) string {
 }
 
 func FilesListForEachCommit(commit string) []string {
-	log.Info("Retrieving files list for the commit %s\n", commit)
+	log.Infof("Retrieving files list for the commit %s\n", commit)
 	filesCmd := helpers.RunCommand("git", "diff", "--name-only", commit, commit+"^")
 	filesCmdUnFiltered := string(filesCmd)
 	cookbookRegexp := regexp.MustCompile(`(.*cookbooks/[^/]*)/(.*)`)

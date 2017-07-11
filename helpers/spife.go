@@ -136,7 +136,7 @@ func Metadata(path, bumpLevel string) string {
 	path += "/metadata.rb"
 	input, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	lines := strings.Split(string(input), "\n")
@@ -151,12 +151,12 @@ func Metadata(path, bumpLevel string) string {
 
 			version, err := parseVersion(lineArray[1])
 			if err != nil {
-				log.Fatalln(err)
+				log.Fatal(err)
 			}
 
 			newVersion, err = bumpVersion(version, bumpLevel)
 			if err != nil {
-				log.Fatalln(err)
+				log.Fatal(err)
 			}
 
 			lineArray[1] = newVersion.String()
@@ -170,7 +170,7 @@ func Metadata(path, bumpLevel string) string {
 	output := strings.Join(lines, "\n")
 	err = ioutil.WriteFile(path, []byte(output), 0644)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	return newVersion.String()

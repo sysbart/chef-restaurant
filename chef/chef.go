@@ -1,7 +1,6 @@
 package chef
 
 import (
-	"fmt"
 	"io/ioutil"
 	"regexp"
 	"strings"
@@ -32,19 +31,18 @@ func Upload(object string, file string) {
 		knife(object, "from", "file", file)
 	}
 
-	log.Info("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
+	log.Infof("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
 }
 
 func knife(cmd ...string) {
-	uploadCmd := helpers.RunCommand("knife", cmd...)
-	fmt.Println(strings.TrimSpace(string(uploadCmd)))
+	helpers.RunCommand("knife", cmd...)
 }
 
 func CookbookInfo(path string) string {
 	path += "/metadata.rb"
 	input, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	var cookbookName string
@@ -62,7 +60,7 @@ func CookbookInfo(path string) string {
 	}
 
 	if cookbookName == "" {
-		log.Fatalln("Cookbook name not found on the following file : " + path)
+		log.Fatal("Cookbook name not found on the following file : " + path)
 	}
 
 	return cookbookName

@@ -20,7 +20,7 @@ func config(configFolder string) {
 	viper.SetConfigType("json")
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		log.Fatalf("Fatal error config file: %s \n", err)
 	}
 	skippedAuthorName = viper.GetString("skipped_author_name")
 	notification.SlackNotificationHookURL = viper.GetString("slack.notification.hook_url")
@@ -29,11 +29,11 @@ func config(configFolder string) {
 	git.GitHubRepoName = viper.GetString("github.repo")
 
 	if notification.SlackNotificationHookURL == "" || notification.SlackNotificationChannel == "" {
-		log.Fatalln("Slack configuration notification is not setup. I am exiting.")
+		log.Fatal("Slack configuration notification is not setup. I am exiting.")
 	}
 
 	if git.GitHubOrganizationName == "" || git.GitHubRepoName == "" {
-		log.Fatalln("Github configuration is not setup. I am exiting.")
+		log.Fatal("Github configuration is not setup. I am exiting.")
 	}
 }
 
@@ -58,7 +58,7 @@ func main() {
 	config(configFolder)
 
 	if strings.Contains(commitAuthor, skippedAuthorName) {
-		fmt.Println("The author of the last commit is chef-restaurant. I am exiting.")
+		log.Info("The author of the last commit is chef-restaurant. I am exiting.")
 		os.Exit(0)
 	}
 
