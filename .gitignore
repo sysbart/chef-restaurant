@@ -1,0 +1,8 @@
+tests/
+etc/config.json
+vendor/
+bin/
+.go
+.dockerfile*
+.container*
+glide.lock

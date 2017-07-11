@@ -1,0 +1,4 @@
+package: github.com/relateiq/chef-restaurant
+import:
+- package: github.com/bluele/slack
+- package: github.com/sirupsen/logrus
