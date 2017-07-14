@@ -3,7 +3,6 @@ package config
 import (
 	"flag"
 	"github.com/spf13/viper"
-	"github.com/sysbart/chef-restaurant/git"
 	log "github.com/sirupsen/logrus"
 
 )
@@ -51,37 +50,21 @@ type Options struct {
 
 func GenerateOptions() Options {
 	optCommit := flag.String("commit", "", "commit ID")
-	optConfigFolder := flag.String("configFolder", "", "config directory")
+	optConfigFolder := flag.String("configFolder", "etc", "config directory")
 	optWorkingFolder := flag.String("workingFolder", "", "working directory")
-	optLogLevel := flag.String("logLevel", "", "log level")
+	optLogLevel := flag.String("logLevel", "info", "log level")
 
 	flag.Parse()
 
-	commit := *optCommit
-	if commit == "" {
-		commit = git.LastCommit()
-	}
-
-	configFolder := *optConfigFolder
-	if configFolder == "" {
-		configFolder = "etc"
-	}
-
-	workingFolder := *optWorkingFolder
-
-	logLevel := *optLogLevel
-	if configFolder == "" {
-		logLevel = "etc"
-	}
-
 	var logLevelMethod log.Level
-	switch logLevel {
+	switch *optLogLevel {
 	case "debug":
 		logLevelMethod = log.DebugLevel
 	case "warn":
 		logLevelMethod = log.WarnLevel
-	default:
+	case "info":
 		logLevelMethod = log.InfoLevel
 	}
-	return Options{commit, configFolder, workingFolder, logLevelMethod}
+
+	return Options{*optCommit, *optConfigFolder, *optWorkingFolder, logLevelMethod}
 }

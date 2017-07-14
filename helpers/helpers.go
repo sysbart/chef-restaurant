@@ -30,6 +30,7 @@ func RunCommand(cmd string, args...string) []byte {
 	runCmd.Dir = WorkingFolder
 	outputCmd, err := runCmd.Output()
   log.Debugf("Running command : %s %s...", cmd, strings.Join(args[:], " "))
+  log.Debugf("Using the following working directory : %s", WorkingFolder)
 
   if err != nil {
     log.Fatal(err)

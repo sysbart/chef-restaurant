@@ -14,19 +14,21 @@ import (
 
 func main() {
 	options := config.GenerateOptions()
-
-	log.SetLevel(options.LogLevelMethod)
-
-	commitAuthor := git.CommitInfo(options.Commit).Author
-	commitTitle := git.CommitInfo(options.Commit).Title
-
 	config := config.Init(options.ConfigFolder)
+	log.SetLevel(options.LogLevelMethod)
 
 	helpers.WorkingFolder = options.WorkingFolder
 	notification.SlackNotificationHookURL = config.SlackNotificationHookURL
 	notification.SlackNotificationChannel = config.SlackNotificationChannel
 	git.GitHubOrganizationName = config.GitHubOrganizationName
 	git.GitHubRepoName = config.GitHubRepoName
+
+	if options.Commit == "" {
+		options.Commit = git.LastCommit()
+	}
+
+	commitAuthor := git.CommitInfo(options.Commit).Author
+	commitTitle := git.CommitInfo(options.Commit).Title
 
 	if strings.Contains(commitAuthor, config.SkippedAuthorName) {
 		log.Info("The author of the last commit is chef-restaurant. I am exiting.")
