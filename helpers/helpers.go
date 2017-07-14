@@ -4,6 +4,9 @@ import (
   log "github.com/sirupsen/logrus"
   "strings"
 )
+
+var WorkingFolder string
+
 // Based on https://www.dotnetperls.com/duplicates-go
 func RemoveDuplicatesUnordered(elements []string) []string {
     encountered := map[string]bool{}
@@ -23,11 +26,13 @@ func RemoveDuplicatesUnordered(elements []string) []string {
 
 
 func RunCommand(cmd string, args...string) []byte {
-  runCmd, err := exec.Command(cmd, args...).Output()
+  runCmd := exec.Command(cmd, args...)
+	runCmd.Dir = WorkingFolder
+	outputCmd, err := runCmd.Output()
   log.Debugf("Running command : %s %s...", cmd, strings.Join(args[:], " "))
 
   if err != nil {
     log.Fatal(err)
   }
-  return runCmd
+  return outputCmd
 }

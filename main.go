@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/sysbart/chef-restaurant/chef"
 	"github.com/sysbart/chef-restaurant/config"
@@ -14,24 +13,16 @@ import (
 )
 
 func main() {
-	optCommit := flag.String("commit", "", "commit ID")
-	optConfigFolder := flag.String("configFolder", "", "config directory")
-	flag.Parse()
+	options := config.GenerateOptions()
 
-	commit := *optCommit
-	if commit == "" {
-		commit = git.LastCommit()
-	}
+	log.SetLevel(options.LogLevelMethod)
 
-	configFolder := *optConfigFolder
-	if configFolder == "" {
-		configFolder = "etc"
-	}
+	commitAuthor := git.CommitInfo(options.Commit).Author
+	commitTitle := git.CommitInfo(options.Commit).Title
 
-	commitAuthor := git.CommitInfo(commit).Author
-	commitTitle := git.CommitInfo(commit).Title
+	config := config.Init(options.ConfigFolder)
 
-	config := config.Init(configFolder)
+	helpers.WorkingFolder = options.WorkingFolder
 	notification.SlackNotificationHookURL = config.SlackNotificationHookURL
 	notification.SlackNotificationChannel = config.SlackNotificationChannel
 	git.GitHubOrganizationName = config.GitHubOrganizationName
@@ -42,7 +33,7 @@ func main() {
 		os.Exit(0)
 	}
 	// Environment and roles are file based, cookbooks are folder based
-	files := git.FilesListForEachCommit(commit)
+	files := git.FilesListForEachCommit(options.Commit)
 	for _, file := range files {
 		var object string
 		var notify bool
@@ -67,7 +58,7 @@ func main() {
 
 		if notify {
 			notificationTitle := fmt.Sprintf("%s *%s* has been uploaded to the Chef server", strings.Title(object), chef.ParseObjectByFileName(object, file))
-			notificationMessage := fmt.Sprintf("`<%s|%s>` %s - [%s] ", git.GenerateCommitURL(commit), commit, commitTitle, commitAuthor)
+			notificationMessage := fmt.Sprintf("`<%s|%s>` %s - [%s] ", git.GenerateCommitURL(options.Commit), options.Commit, commitTitle, commitAuthor)
 			notification.SendMessage(notificationTitle, notificationMessage)
 		}
 

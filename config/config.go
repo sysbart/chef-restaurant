@@ -1,8 +1,11 @@
 package config
 
 import (
+	"flag"
 	"github.com/spf13/viper"
+	"github.com/sysbart/chef-restaurant/git"
 	log "github.com/sirupsen/logrus"
+
 )
 
 type Config struct {
@@ -37,4 +40,48 @@ func Init(configFolder string) Config {
   }
 
   return Config{skippedAuthorName,slackNotificationHookURL,slackNotificationChannel,gitHubOrganizationName,gitHubRepoName}
+}
+
+type Options struct {
+	Commit         		string
+	ConfigFolder  		string
+	WorkingFolder  		string
+	LogLevelMethod  	log.Level
+}
+
+func GenerateOptions() Options {
+	optCommit := flag.String("commit", "", "commit ID")
+	optConfigFolder := flag.String("configFolder", "", "config directory")
+	optWorkingFolder := flag.String("workingFolder", "", "working directory")
+	optLogLevel := flag.String("logLevel", "", "log level")
+
+	flag.Parse()
+
+	commit := *optCommit
+	if commit == "" {
+		commit = git.LastCommit()
+	}
+
+	configFolder := *optConfigFolder
+	if configFolder == "" {
+		configFolder = "etc"
+	}
+
+	workingFolder := *optWorkingFolder
+
+	logLevel := *optLogLevel
+	if configFolder == "" {
+		logLevel = "etc"
+	}
+
+	var logLevelMethod log.Level
+	switch logLevel {
+	case "debug":
+		logLevelMethod = log.DebugLevel
+	case "warn":
+		logLevelMethod = log.WarnLevel
+	default:
+		logLevelMethod = log.InfoLevel
+	}
+	return Options{commit, configFolder, workingFolder, logLevelMethod}
 }
