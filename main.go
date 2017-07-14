@@ -27,10 +27,9 @@ func main() {
 		options.Commit = git.LastCommit()
 	}
 
-	commitAuthor := git.CommitInfo(options.Commit).Author
-	commitTitle := git.CommitInfo(options.Commit).Title
+	commitInfo := git.CommitInfo(options.Commit)
 
-	if strings.Contains(commitAuthor, config.SkippedAuthorName) {
+	if strings.Contains(commitInfo.Author, config.SkippedAuthorName) {
 		log.Info("The author of the last commit is chef-restaurant. I am exiting.")
 		os.Exit(0)
 	}
@@ -60,7 +59,7 @@ func main() {
 
 		if notify {
 			notificationTitle := fmt.Sprintf("%s *%s* has been uploaded to the Chef server", strings.Title(object), chef.ParseObjectByFileName(object, file))
-			notificationMessage := fmt.Sprintf("`<%s|%s>` %s - [%s] ", git.GenerateCommitURL(options.Commit), options.Commit, commitTitle, commitAuthor)
+			notificationMessage := fmt.Sprintf("`<%s|%s>` %s - [%s] ", git.GenerateCommitURL(options.Commit), options.Commit, commitInfo.Title, commitInfo.Author)
 			notification.SendMessage(notificationTitle, notificationMessage)
 		}
 
