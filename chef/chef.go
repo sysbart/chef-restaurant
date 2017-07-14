@@ -20,7 +20,7 @@ func ParseObjectByFileName(object string, file string) string {
 }
 
 func Upload(object string, file string) {
-	log.Info("%s %s has been modified\n", strings.Title(object), file)
+	log.Infof("%s %s has been modified\n", strings.Title(object), file)
 	parsedFilename := ParseObjectByFileName(object, file)
 
 	if object == "cookbook" {
