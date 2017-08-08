@@ -20,15 +20,17 @@ func ParseObjectByFileName(object string, file string) string {
 }
 
 func Upload(object string, file string) {
-	log.Infof("%s %s has been modified\n", strings.Title(object), file)
+	log.Infof("%s %s has been modified", strings.Title(object), file)
 	parsedFilename := ParseObjectByFileName(object, file)
 
 	if object == "cookbook" {
 		cookbookRegexp := regexp.MustCompile(`(.*cookbooks)/(.*)`)
 		cookbookBaseFolder := cookbookRegexp.ReplaceAllString(file, "$1")
 		knife(object, "upload", "-o", cookbookBaseFolder, parsedFilename)
+	} else if strings.HasSuffix(file, ".json") || strings.HasSuffix(file, ".rb") {
+		knife(object + " from file " + file)
 	} else {
-		knife(object, "from", "file", file)
+		log.Infof("The file %s has been not uploaded since its filetype is not supported", file)
 	}
 
 	log.Infof("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
