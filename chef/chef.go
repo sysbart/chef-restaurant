@@ -28,7 +28,7 @@ func Upload(object string, file string) {
 		cookbookBaseFolder := cookbookRegexp.ReplaceAllString(file, "$1")
 		knife(object, "upload", "-o", cookbookBaseFolder, parsedFilename)
 	} else if strings.HasSuffix(file, ".json") || strings.HasSuffix(file, ".rb") {
-		knife(object + " from file " + file)
+		knife(object, "from", "file", file)
 	} else {
 		log.Infof("The file %s has been not uploaded since its filetype is not supported", file)
 	}

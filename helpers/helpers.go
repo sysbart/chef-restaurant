@@ -25,7 +25,7 @@ func RemoveDuplicatesUnordered(elements []string) []string {
 }
 
 
-func RunCommand(cmd string, args...string) []byte {
+func RunCommand(cmd string, args ...string) []byte {
   runCmd := exec.Command(cmd, args...)
 	runCmd.Dir = WorkingFolder
 	outputCmd, err := runCmd.Output()
@@ -33,6 +33,7 @@ func RunCommand(cmd string, args...string) []byte {
   log.Debugf("Using the following working directory : %s", WorkingFolder)
 
   if err != nil {
+    log.Error(string(outputCmd))
     log.Fatal(err)
   }
   return outputCmd
