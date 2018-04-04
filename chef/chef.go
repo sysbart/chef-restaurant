@@ -6,14 +6,14 @@ import (
 	"strings"
 	log "github.com/sirupsen/logrus"
 	"github.com/sysbart/chef-restaurant/helpers"
-	"fmt"
 )
 
 func ParseObjectByFileName(object string, file string) string {
 	var parsedFilename string
+
 	if object == "cookbook" {
-		cookbookName, cookbookVersion, _ := CookbookInfo(file)
-		parsedFilename = fmt.Sprintf("%s [%s]", cookbookName, cookbookVersion)
+		cookbookName, _, _ := CookbookInfo(file)
+		parsedFilename = cookbookName
 	} else {
 		fileRegexp := regexp.MustCompile(`.*/(.*)\..*$`)
 		parsedFilename = fileRegexp.ReplaceAllString(file, "$1")

@@ -102,7 +102,12 @@ func main() {
 
 			if object != "" {
 				if err == nil {
-					notificationTitle = fmt.Sprintf("%s *%s* has been uploaded to the Chef server", strings.Title(object), chef.ParseObjectByFileName(object, file))
+					if object == "cookbook" {
+						_, cookbookVersion, _ := chef.CookbookInfo(file)
+						notificationTitle = fmt.Sprintf("%s *%s* [%s] has been uploaded to the Chef server", strings.Title(object), chef.ParseObjectByFileName(object, file), cookbookVersion)
+					} else {
+						notificationTitle = fmt.Sprintf("%s *%s* has been uploaded to the Chef server", strings.Title(object), chef.ParseObjectByFileName(object, file))
+					}
 					notificationMessage = fmt.Sprintf("`<%s|%s>` %s - [%s] ", git.GenerateCommitURL(options.Commit), options.Commit, commitInfo.Title, commitInfo.Author)
 					notificationColor = "good"
 				} else {
