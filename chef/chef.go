@@ -6,12 +6,14 @@ import (
 	"strings"
 	log "github.com/sirupsen/logrus"
 	"github.com/sysbart/chef-restaurant/helpers"
+	"fmt"
 )
 
 func ParseObjectByFileName(object string, file string) string {
 	var parsedFilename string
 	if object == "cookbook" {
-		parsedFilename = CookbookInfo(file)
+		cookbookName, cookbookVersion, _ := CookbookInfo(file)
+		parsedFilename = fmt.Sprintf("%s [%s]", cookbookName, cookbookVersion)
 	} else {
 		fileRegexp := regexp.MustCompile(`.*/(.*)\..*$`)
 		parsedFilename = fileRegexp.ReplaceAllString(file, "$1")
@@ -19,28 +21,36 @@ func ParseObjectByFileName(object string, file string) string {
 	return parsedFilename
 }
 
-func Upload(object string, file string) {
+func Upload(object string, file string) error {
 	log.Infof("%s %s has been modified", strings.Title(object), file)
 	parsedFilename := ParseObjectByFileName(object, file)
+
+	var err error
 
 	if object == "cookbook" {
 		cookbookRegexp := regexp.MustCompile(`(.*cookbooks)/(.*)`)
 		cookbookBaseFolder := cookbookRegexp.ReplaceAllString(file, "$1")
-		knife(object, "upload", "-o", cookbookBaseFolder, parsedFilename)
+		err = knife(object, "upload", "-o", cookbookBaseFolder, parsedFilename)
 	} else if strings.HasSuffix(file, ".json") || strings.HasSuffix(file, ".rb") {
-		knife(object, "from", "file", file)
+		err = knife(object, "from", "file", file)
 	} else {
 		log.Infof("The file %s has been not uploaded since its filetype is not supported", file)
 	}
 
-	log.Infof("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
+	if err != nil {
+		log.Errorf("%s %s has been not uploaded to the Chef server because an error occurred when uploading to the Chef server\n", strings.Title(object), parsedFilename)
+		return err
+	} else {
+		log.Infof("%s %s has been uploaded to the Chef server\n", strings.Title(object), parsedFilename)
+		return nil
+	}
 }
 
-func knife(cmd ...string) {
-	helpers.RunCommand("knife", cmd...)
+func knife(cmd ...string) (error) {
+	_, err := helpers.RunCommand("knife", cmd...)
+	return err
 }
 
-func CookbookInfo(path string) string {
 func CookbookInfo(path string) (name string, version string, err error) {
 	path += "/metadata.rb"
 	input, err := ioutil.ReadFile(path)
