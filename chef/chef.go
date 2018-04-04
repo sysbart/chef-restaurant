@@ -41,29 +41,38 @@ func knife(cmd ...string) {
 }
 
 func CookbookInfo(path string) string {
+func CookbookInfo(path string) (name string, version string, err error) {
 	path += "/metadata.rb"
 	input, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf("Cannot read metadata file for cookbook %s", path)
+		log.Error(err)
+		return name, version, err
 	}
-
-	var cookbookName string
 
 	lines := strings.Split(string(input), "\n")
 
 	for _, line := range lines {
 		cookbookNamePattern, _ := regexp.MatchString("^( |\t)*name( |\t)+(\\'|\")(.+)(\\'|\")", line)
+		cookbookVersionPattern, _ := regexp.MatchString("^( |\t)*version( |\t)+(\\'|\")(.+)(\\'|\")", line)
 
 		if cookbookNamePattern {
 			line = strings.Replace(line, "\"", "'", 2)
 			lineArray := strings.Split(line, "'")
-			cookbookName = lineArray[1]
+			name = lineArray[1]
+		}
+
+		if cookbookVersionPattern {
+			line = strings.Replace(line, "\"", "'", 2)
+			lineArray := strings.Split(line, "'")
+			version = lineArray[1]
 		}
 	}
 
-	if cookbookName == "" {
-		log.Fatal("Cookbook name not found on the following file : " + path)
+	if name == "" || version == "" {
+		log.Errorf("Cookbook name or version not found on the following file %s", path)
+		return name, version, err
 	}
 
-	return cookbookName
+	return name, version, nil
 }
